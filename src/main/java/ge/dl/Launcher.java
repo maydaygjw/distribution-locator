@@ -39,7 +39,7 @@ public class Launcher {
 			}
 		});
 		
-		LocatorClient client = new LocatorClient(launcher);
+		LocatorClient client = new LocatorClient();
 		client.start();
 	}
 }

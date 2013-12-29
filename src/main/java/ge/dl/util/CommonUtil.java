@@ -38,8 +38,13 @@ public class CommonUtil {
         
         return result;
 	}
-	
-	public static void main(String[] args) {
-		System.out.println(CommonUtil.getIP("127.0.0.1"));
+
+	public static long getCurrentTimestamp() {
+		
+		return System.currentTimeMillis();
 	}
+	
+	/*public static void main(String[] args) {
+		System.out.println(CommonUtil.getIP("127.0.0.1"));
+	}*/
 }

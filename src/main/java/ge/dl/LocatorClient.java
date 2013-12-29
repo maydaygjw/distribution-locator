@@ -15,7 +15,6 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.util.Iterator;
 
-
 public class LocatorClient extends Thread {
 
 	private CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
@@ -25,12 +24,12 @@ public class LocatorClient extends Thread {
 	private SelectionKey clientKey = null;
 
 	private String backupIP = "10.114.193.158";
-	
+
 	private Launcher launcher;
 
-	public LocatorClient(Launcher launcher) {
-		
-		this.launcher = launcher;
+	public LocatorClient() {
+
+		// this.launcher = launcher;
 
 		try {
 			selector = Selector.open();
@@ -48,9 +47,11 @@ public class LocatorClient extends Thread {
 
 	@Override
 	public void run() {
-		try {
-			
-			while (true) {
+
+		while (true) {
+
+			try {
+
 				selector.select();
 				Iterator<SelectionKey> it = selector.selectedKeys().iterator();
 				while (it.hasNext()) {
@@ -74,49 +75,49 @@ public class LocatorClient extends Thread {
 						String msg = decoder.decode(buffer).toString();
 						System.out.println("Recevied:" + msg);
 						sendBack(msg);
-						
+
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						
-						
-						
-						
+
 					}
 				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				selector.close();
-				socket.close();
 			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					//selector.close();
+					//socket.close();
+					
+					socket.connect(new InetSocketAddress("localhost", 9999));
+				} catch (IOException e) {
+				}
 			}
 		}
+
 	}
 
 	private void sendBack(String msg) {
-		
+
 		String retMsg = "HeartBeat#" + backupIP;
-		
+
 		String[] msgArr = msg.split("#");
-		if(msgArr.length == 2) {
-			if("Failover".equals(msgArr[1])) {
+		if (msgArr.length == 2) {
+			if ("Failover".equals(msgArr[1])) {
 				Event e = new EventImpl("Failover");
 				launcher.triggerEvent(e);
 				retMsg += "#BackupStarted";
-			} else if("Recover".equals(msgArr[1])) {
+			} else if ("Recover".equals(msgArr[1])) {
 				Event e = new EventImpl("Recover");
 				launcher.triggerEvent(e);
 			}
 		}
-		
+
 		send(retMsg);
-		
+
 	}
 
 	public void send(String msg) {
