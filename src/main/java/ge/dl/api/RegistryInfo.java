@@ -54,7 +54,7 @@ public class RegistryInfo {
 
 	public void synchronizeAll(Set<String> locatorMembers) {
 		for (String member : locatorMembers) {
-			UDPClientUtil.send(member, members);
+			UDPClientUtil.send(member, 5678, members);
 		}
 	}
 	

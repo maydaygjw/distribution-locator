@@ -39,7 +39,7 @@ public class ClientLauncher {
 			}
 		});
 		
-		LocatorClient client = new LocatorClient();
+		LocatorClient client = new LocatorClient("localhost", 12345, "localhost", 12346, "localhost");
 		client.start();
 	}
 }

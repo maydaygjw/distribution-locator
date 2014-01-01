@@ -23,29 +23,44 @@ public class LocatorClient extends Thread {
 	private SocketChannel socket = null;
 	private SelectionKey clientKey = null;
 
-	private String backupIP = "10.114.193.158";
+	private String backupIP;
 
-	private String backupLocator = "localhost";
-	private int backupLocatorPort = 12346;
+	private String backupLocator;
+	private int backupLocatorPort;
+	private int locatorPort;
+	private String locatorIP;
 
 	private ClientLauncher launcher;
 
-	public LocatorClient() {
+	public LocatorClient(String locatorIP, int locatorPort, String backupLocatorIP, int backupLocatorPort, String backupIP) {
 
-		// this.launcher = launcher;
-
+		this.locatorIP = locatorIP;
+		this.locatorPort = locatorPort;
+		this.backupLocator = backupLocatorIP;
+		this.backupLocatorPort = backupLocatorPort;
+		this.backupIP = backupIP;
+		
 		try {
+			connect(locatorIP, locatorPort);
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+			System.out.println("unable to connect to locator");
+		}
+		
+	}
+	
+	private void connect(String ip, int port) throws IOException {
+	
 			selector = Selector.open();
 
 			socket = SocketChannel.open();
 			socket.configureBlocking(false);
 			clientKey = socket.register(selector, SelectionKey.OP_CONNECT);
 
-			InetSocketAddress ip = new InetSocketAddress("localhost", 12345);
-			socket.connect(ip);
-		} catch (IOException e) {
-			System.out.println("unable to connect to the primary locator");
-		}
+			InetSocketAddress ipAddr = new InetSocketAddress(locatorIP, locatorPort);
+			socket.connect(ipAddr);
+		
 	}
 
 	@Override
@@ -93,14 +108,7 @@ public class LocatorClient extends Thread {
 				e.printStackTrace();
 				System.out.println("unable to connect to the primary locator, try to connect to the backuo locator");
 				try {
-					selector = Selector.open();
-
-					socket = SocketChannel.open();
-					socket.configureBlocking(false);
-					clientKey = socket.register(selector, SelectionKey.OP_CONNECT);
-
-					InetSocketAddress backupIP = new InetSocketAddress(backupLocator, backupLocatorPort);
-					socket.connect(backupIP);
+					connect(backupLocator, backupLocatorPort);
 
 				} catch (IOException e1) {
 					e1.printStackTrace();

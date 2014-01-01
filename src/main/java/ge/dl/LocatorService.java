@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.prefs.BackingStoreException;
 
 public class LocatorService extends Thread{
 
@@ -35,15 +36,19 @@ public class LocatorService extends Thread{
 
 	static CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
 	
-	private int localport = 12345;
+	private int localport;
+	private String backupIP;
+	private int backupPort;
 
 	public Set<String> locatorMemberSet = new HashSet<String>();
 
 	private Set<String> exceptionClientIdSet = new HashSet<String>();
 	private Set<String> recoverClientIdSet = new HashSet<String>();
 	
-	public LocatorService(int localport) {
+	public LocatorService(int localport, String backupIP, int backupport) {
 		this.localport = localport;
+		this.backupIP = backupIP;
+		this.backupPort = backupport;
 	}
 
 	
