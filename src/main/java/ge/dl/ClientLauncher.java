@@ -6,7 +6,7 @@ import ge.dl.api.EventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Launcher {
+public class ClientLauncher {
 	
 	private List<EventListener> listeners = new ArrayList<EventListener>();
 	
@@ -23,7 +23,7 @@ public class Launcher {
 
 	public static void main(String[] args) {
 		
-		Launcher launcher = new Launcher();
+		ClientLauncher launcher = new ClientLauncher();
 		
 		launcher.addListener(new EventListener() {
 			

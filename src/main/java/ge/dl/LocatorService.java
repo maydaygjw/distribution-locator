@@ -34,11 +34,17 @@ public class LocatorService extends Thread{
 	private RegistryInfo registry = new RegistryInfo();
 
 	static CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
+	
+	private int localport = 12345;
 
 	public Set<String> locatorMemberSet = new HashSet<String>();
 
 	private Set<String> exceptionClientIdSet = new HashSet<String>();
 	private Set<String> recoverClientIdSet = new HashSet<String>();
+	
+	public LocatorService(int localport) {
+		this.localport = localport;
+	}
 
 	
 	@Override
@@ -62,10 +68,10 @@ public class LocatorService extends Thread{
 			server.register(selector, SelectionKey.OP_ACCEPT);
 
 			// IP Address
-			InetSocketAddress ip = new InetSocketAddress(12345);
+			InetSocketAddress ip = new InetSocketAddress(localport);
 			server.socket().bind(ip);
 			
-			System.out.println("Locator Service started at: " + 12345);
+			System.out.println("Locator Service started at: " + localport);
 
 			while (true) {
 				selector.select();

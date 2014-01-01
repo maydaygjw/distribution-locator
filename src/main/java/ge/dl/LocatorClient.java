@@ -25,7 +25,10 @@ public class LocatorClient extends Thread {
 
 	private String backupIP = "10.114.193.158";
 
-	private Launcher launcher;
+	private String backupLocator = "localhost";
+	private int backupLocatorPort = 12346;
+
+	private ClientLauncher launcher;
 
 	public LocatorClient() {
 
@@ -41,7 +44,7 @@ public class LocatorClient extends Thread {
 			InetSocketAddress ip = new InetSocketAddress("localhost", 12345);
 			socket.connect(ip);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("unable to connect to the primary locator");
 		}
 	}
 
@@ -86,14 +89,23 @@ public class LocatorClient extends Thread {
 					}
 				}
 			} catch (IOException e) {
+
 				e.printStackTrace();
-			} finally {
+				System.out.println("unable to connect to the primary locator, try to connect to the backuo locator");
 				try {
-					//selector.close();
-					//socket.close();
-					
-					socket.connect(new InetSocketAddress("localhost", 9999));
-				} catch (IOException e) {
+					selector = Selector.open();
+
+					socket = SocketChannel.open();
+					socket.configureBlocking(false);
+					clientKey = socket.register(selector, SelectionKey.OP_CONNECT);
+
+					InetSocketAddress backupIP = new InetSocketAddress(backupLocator, backupLocatorPort);
+					socket.connect(backupIP);
+
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					System.out.println("unable to connect to the backup locator, system exit");
+					this.stop();
 				}
 			}
 		}
