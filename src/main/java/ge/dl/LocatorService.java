@@ -1,7 +1,7 @@
 package ge.dl;
 
 import ge.dl.api.MemberInfo;
-import ge.dl.api.RegistryInfo;
+import ge.dl.api.DataService;
 import ge.dl.util.CommonUtil;
 
 import java.io.ByteArrayInputStream;
@@ -32,23 +32,30 @@ public class LocatorService extends Thread{
 
 	//private static Map<String, MemberInfo> infos = new HashMap<String, MemberInfo>();
 	
-	private RegistryInfo registry = new RegistryInfo();
+	
+	private DataService registry = new DataService();
 
 	static CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
 	
 	private int localport;
 	private String backupIP;
 	private int backupPort;
+	
+	private DataService dataService;
+	private SyncService ss;
+	
 
 	public Set<String> locatorMemberSet = new HashSet<String>();
 
 	private Set<String> exceptionClientIdSet = new HashSet<String>();
 	private Set<String> recoverClientIdSet = new HashSet<String>();
 	
-	public LocatorService(int localport, String backupIP, int backupport) {
+	public LocatorService(int localport, String backupIP, int backupport, DataService dataService, SyncService ss) {
 		this.localport = localport;
 		this.backupIP = backupIP;
 		this.backupPort = backupport;
+		this.dataService = dataService;
+		this.ss = ss;
 	}
 
 	
@@ -168,6 +175,8 @@ public class LocatorService extends Thread{
 			retString += "#Recover";
 			recoverClientIdSet.remove(clientIP);
 		}
+		
+		ss.syncAll();
 
 		try {
 			channel.write(encoder.encode(CharBuffer.wrap(retString)));

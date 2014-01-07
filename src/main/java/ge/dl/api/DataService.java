@@ -7,9 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class RegistryInfo {
+public class DataService {
 
-	public Map<String, String> locatorGroup = new HashMap<String, String>();
 
 	public Map<String, MemberInfo> members = new HashMap<String, MemberInfo>();
 
@@ -52,7 +51,7 @@ public class RegistryInfo {
 		}
 	}
 
-	public void synchronizeAll(Set<String> locatorMembers) {
+	public void synchronizeOthers(Set<String> locatorMembers) {
 		for (String member : locatorMembers) {
 			UDPClientUtil.send(member, 5678, members);
 		}
