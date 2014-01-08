@@ -29,17 +29,22 @@ public class LocatorClientRunner extends Thread {
 	private int locatorPort;
 	private String locatorIP;
 	
+	private String backupIP;
+	
 	private boolean backupServiceActive = false;
 	private boolean clientActive = true;
 
 	private LocatorClient launcher;
 
-	public LocatorClientRunner(String locatorIP, int locatorPort, String backupLocatorIP, int backupLocatorPort, LocatorClient launcher) {
+	public LocatorClientRunner(String locatorIP, int locatorPort, String backupLocatorIP, int backupLocatorPort, LocatorClient launcher, String backupIP) {
 
 		this.locatorIP = locatorIP;
 		this.locatorPort = locatorPort;
 		this.backupLocator = backupLocatorIP;
 		this.backupLocatorPort = backupLocatorPort;
+		
+		this.backupIP = backupIP;
+		
 		this.launcher = launcher;
 		
 		try {
@@ -88,7 +93,7 @@ public class LocatorClientRunner extends Thread {
 						channel.register(selector, SelectionKey.OP_READ);
 						System.out.println("Connected!");
 
-						send("HeartBeat#" + backupLocator);
+						send("HeartBeat#" + backupIP);
 					} else if (key.isReadable()) {
 						SocketChannel channel = (SocketChannel) key.channel();
 

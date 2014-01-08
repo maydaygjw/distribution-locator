@@ -8,8 +8,8 @@ import java.util.List;
 
 public class LocatorClient {
 	
-	public void setParam(String locatorIP, int locatorPort, String backupLocatorIP, int backupLocatorPort) {
-		clientRunner = new LocatorClientRunner(locatorIP, locatorPort, backupLocatorIP, backupLocatorPort, this);
+	public void setParam(String locatorIP, int locatorPort, String backupLocatorIP, int backupLocatorPort, String backupIP) {
+		clientRunner = new LocatorClientRunner(locatorIP, locatorPort, backupLocatorIP, backupLocatorPort, this, backupIP);
 	}
 	
 	private List<EventListener> listeners = new ArrayList<EventListener>();

@@ -4,7 +4,7 @@ public class ServerLauncher {
 
 	public static void main(String[] args) {
 		
-		ServerManager manager = new ServerManager(8888, "localhost", 9999, 5678, 6678);
+		ServerManager manager = new ServerManager(9999, "10.114.193.158", 9999, 6678, 5678);
 		
 		manager.startServer();
 	}
