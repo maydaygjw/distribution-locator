@@ -41,7 +41,6 @@ public class LocatorService extends Thread{
 	private String backupIP;
 	private int backupPort;
 	
-	private DataService dataService;
 	private SyncService ss;
 	
 
@@ -54,7 +53,7 @@ public class LocatorService extends Thread{
 		this.localport = localport;
 		this.backupIP = backupIP;
 		this.backupPort = backupport;
-		this.dataService = dataService;
+		this.registry = dataService;
 		this.ss = ss;
 	}
 

@@ -22,6 +22,7 @@ public class SyncService extends Thread {
 	
 	private int syncPort;
 	private int backupSyncPort;
+	private String backupSyncIp;
 	
 	private DataService dataService;
 	
@@ -29,11 +30,12 @@ public class SyncService extends Thread {
 	
 	public SyncService(int syncPort, String backupSyncIp, int backupSyncPort, DataService dataService) {
 		this.syncPort = syncPort;
+		this.backupSyncIp = backupSyncIp;
 		this.backupSyncPort = backupSyncPort;
 		this.dataService = dataService;
 		
 		locatorMembers = new HashSet<String>();
-		locatorMembers.add(backupSyncIp + backupSyncPort);
+		locatorMembers.add(this.backupSyncIp + "," + this.backupSyncPort);
 	}
 	
 	public void addLocatorMember(String ip) {
@@ -55,7 +57,7 @@ public class SyncService extends Thread {
 
 		byte buf[] = new byte[1024];
 		DatagramPacket dp = new DatagramPacket(buf, buf.length);
-		DatagramSocket ds = new DatagramSocket(5678);
+		DatagramSocket ds = new DatagramSocket(syncPort);
 
 		System.out.println("Sync Server started at: " + syncPort);
 
@@ -65,17 +67,25 @@ public class SyncService extends Thread {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 
 			HashMap infos = (HashMap<String, MemberInfo>) ois.readObject();
+			
+			System.out.println("Recevied data from other member: " + infos);
+			
 			dataService.synchronize(infos);
 		}
 	}
 
 	public void syncAll() {
 		for(String backupSync: locatorMembers) {
+			
+			
+			
 			String[] ipAndPort = backupSync.split(",");
 			String backupSyncIp = ipAndPort[0];
 			int backupSyncPort = Integer.valueOf(ipAndPort[1]);
 			
 			HashMap context = (HashMap) dataService.getAllMembers();
+			
+			System.out.println("Send to backup locator: " + backupSync + "|data: " + context);
 			
 			UDPClientUtil.send(backupSyncIp, backupSyncPort, context);
 		}

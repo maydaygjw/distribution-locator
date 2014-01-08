@@ -1,8 +1,16 @@
 package ge.dl.api;
 
+import java.io.Serializable;
 
-public class MemberInfo {
+
+public class MemberInfo implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	public static final long TIMEOUT = 10000;
 
 	
